@@ -7,7 +7,7 @@ mongoose.connect('mongodb://localhost/jobRemind');
 app.use(express.static('public'));
 
 app.get('/', function(req, res) {
-  res.send(index.html);
+  res.render('index');
 });
 
 app.listen(3000, function(){
