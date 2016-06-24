@@ -11,9 +11,11 @@
   "license": "ISC",
   "dependencies": {
     "express": "^4.13.4",
+    "history": "^3.0.0",
     "mongodb": "^2.1.18",
     "mongoose": "^4.4.20",
-    "react": "^15.1.0"
+    "react": "^15.1.0",
+    "react-router": "^2.5.1"
   },
   "devDependencies": {
     "babel-core": "^6.10.4",
