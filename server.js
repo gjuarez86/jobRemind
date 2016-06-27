@@ -2,7 +2,10 @@ var express = require('express');
 var app = express();
 var cheerio = require('cheerio');
 var request = require('request');
+var searchRoutes = require('./routes/search');
+var sessionsRoutes = require('./routes/sessions');
 var fs = require('fs');
+var bodyParser = require('body-parser');
 // Twilio Credentials 
 var accountSid = 'ACf2c336e0b36ace88e3b0308f0ebf0a59'; 
 var authToken = '2a38f364bc92c90dad926e1a279a3181'; 
@@ -12,49 +15,21 @@ var client = require('twilio')(accountSid, authToken);
 var mongoose = require('mongoose');
 mongoose.connect('mongodb://localhost/jobRemind');
 
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({extended: false}));
 
 app.use(express.static('public'));
 
+//Routes 
+app.use('/search', searchRoutes);
+app.use('/sessions', sessionsRoutes);
+
 app.get('/', function(req, res) {
-  res.render('index');
+  res.render('index');            
 });
-//Scrape-----------------------------------------------------------
-var oldTitle = null;
 
-var recursive = function(req, res) {
-	url = 'https://losangeles.craigslist.org/search/jjj';
-	request(url, function(error, response, html){
-		if(!error){
-			var $ = cheerio.load(html);
-			var newTitle = oldTitle;
-			var json = {title : ""};
-			$('#titletextonly').filter(function(){
-				var data = $(this);
-				oldTitle = data.text();
-				// console.log(oldTitle);
-				json.title = oldTitle;
-			})
-			if((oldTitle !== newTitle)) {
-				client.sms.messages.create({ 
-				    to: "+13107353047", 
-				    from: "+15005550006",
-				    body: json.title
-				}, function(err, message) { 
-				    console.log('Sent from your twilio account -' + message.body); 
-				});
-			};
-
-			fs.writeFile('output.json', JSON.stringify(json, null, 4), function(err){
-				// console.log('File successfully written! - Check your project directory for the output.json file');
-			});
-		}
-	})
-	setInterval(recursive, 60000);
-};
-app.get('/scrape', recursive);
-
-app.post('/search', function(req, res) {
-	res.send('hello search');
+app.get('/login', function(req, res) {
+	res.render('login.html');
 })
 
 app.listen(3000, function(){
