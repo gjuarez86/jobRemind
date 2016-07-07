@@ -6,7 +6,7 @@ module.exports = React.createClass({
 			<div>	
 				<h1>Search for a new Job Posting</h1>
 				<form action='/scrape' method='get'>
-					<button/>
+					<button>Find a Job</button>
 				</form>
 			</div>
 		)
